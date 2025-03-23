@@ -4,6 +4,10 @@ export interface ServiceItem {
   name: string;
   description: string;
   price: number;
+  provider?: string;
+  rating?: number;
+  reviews?: number;
+  experience?: string;
 }
 
 export interface Service {

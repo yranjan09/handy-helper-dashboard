@@ -1,4 +1,3 @@
-
 import { Service, Appointment } from '@/types/service';
 
 export const services: Service[] = [
@@ -9,27 +8,43 @@ export const services: Service[] = [
     items: [
       {
         id: 'faucet-repair',
-        name: 'Faucet Repair',
+        name: 'Faucet repair',
         description: 'Regular Service',
-        price: 100
+        price: 100,
+        provider: 'Anipro',
+        rating: 4.0,
+        reviews: 1,
+        experience: '3-5 yrs xp'
       },
       {
         id: 'pressure-check',
-        name: 'Pressure Check',
+        name: 'Pressure check',
         description: 'Regular Service',
-        price: 80
+        price: 80,
+        provider: 'Anipro',
+        rating: 0,
+        reviews: 0,
+        experience: '3-5 yrs xp'
       },
       {
         id: 'pipe-fixtures',
-        name: 'Pipe Fixtures',
+        name: 'Pipe fixtures',
         description: 'Regular Service',
-        price: 300
+        price: 300,
+        provider: 'Anipro',
+        rating: 5.0,
+        reviews: 1,
+        experience: '3-5 yrs xp'
       },
       {
-        id: 'leak-repair',
-        name: 'Leak Repair',
+        id: 'faucet-repair-alt',
+        name: 'Faucet repair',
         description: 'Regular Service',
-        price: 150
+        price: 70,
+        provider: 'Hikaru',
+        rating: 0,
+        reviews: 0,
+        experience: '5-10 yrs xp'
       }
     ]
   },
@@ -42,25 +57,41 @@ export const services: Service[] = [
         id: 'house-cleaning',
         name: 'House Cleaning',
         description: 'Standard Cleaning',
-        price: 200
+        price: 200,
+        provider: 'CleanEx',
+        rating: 4.5,
+        reviews: 10,
+        experience: '5-7 yrs xp'
       },
       {
         id: 'deep-cleaning',
         name: 'Deep Cleaning',
         description: 'Thorough Cleaning',
-        price: 350
+        price: 350,
+        provider: 'CleanEx',
+        rating: 4.8,
+        reviews: 15,
+        experience: '5-7 yrs xp'
       },
       {
         id: 'window-cleaning',
         name: 'Window Cleaning',
         description: 'All Windows',
-        price: 150
+        price: 150,
+        provider: 'GlassPro',
+        rating: 4.2,
+        reviews: 8,
+        experience: '3-5 yrs xp'
       },
       {
         id: 'carpet-cleaning',
         name: 'Carpet Cleaning',
         description: 'Per Room',
-        price: 100
+        price: 100,
+        provider: 'CarpetCare',
+        rating: 4.0,
+        reviews: 12,
+        experience: '4-6 yrs xp'
       }
     ]
   },
