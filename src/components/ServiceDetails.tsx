@@ -15,6 +15,7 @@ const ServiceDetails = ({ service }: ServiceDetailsProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   
   const handleBooking = (item: ServiceItem) => {
+    console.log("Booking item:", item);
     setSelectedItem(item);
     setIsModalOpen(true);
   };
@@ -68,15 +69,13 @@ const ServiceDetails = ({ service }: ServiceDetailsProps) => {
             </motion.div>
           ))}
         </div>
-        
-        {selectedItem && (
-          <BookingModal 
-            isOpen={isModalOpen}
-            onClose={handleCloseModal}
-            item={selectedItem}
-          />
-        )}
       </motion.div>
+      
+      <BookingModal 
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        item={selectedItem}
+      />
     </AnimatePresence>
   );
 };
