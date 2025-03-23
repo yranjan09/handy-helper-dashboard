@@ -25,4 +25,6 @@ export interface Appointment {
   completionDate?: string;
   phone: string;
   status: 'Completed' | 'Scheduled' | 'Pending';
+  rating?: number;
+  remarks?: string;
 }

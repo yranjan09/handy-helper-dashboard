@@ -4,18 +4,51 @@ import { Button } from '@/components/ui/button';
 import { Appointment } from '@/types/service';
 import { useState } from 'react';
 import { DialogContent, DialogHeader, DialogTitle, Dialog, DialogDescription } from '@/components/ui/dialog';
+import { Textarea } from "@/components/ui/textarea";
+import { Star } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 interface ServiceHistoryProps {
   appointments: Appointment[];
 }
 
+interface ServiceRemarksForm {
+  remarks: string;
+  rating: number;
+}
+
 const ServiceHistory = ({ appointments }: ServiceHistoryProps) => {
   const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
   const [open, setOpen] = useState(false);
+  const [remarksOpen, setRemarksOpen] = useState(false);
+
+  const form = useForm<ServiceRemarksForm>({
+    defaultValues: {
+      remarks: "",
+      rating: 0
+    }
+  });
 
   const handleViewDetails = (appointment: Appointment) => {
     setSelectedAppointment(appointment);
     setOpen(true);
+  };
+
+  const handleViewRemarks = (appointment: Appointment) => {
+    setSelectedAppointment(appointment);
+    setRemarksOpen(true);
+    form.reset({
+      remarks: "",
+      rating: appointment.status === 'Completed' ? 3 : 0
+    });
+  };
+
+  const onSubmitRemarks = (data: ServiceRemarksForm) => {
+    toast.success("Service remarks submitted successfully!");
+    setRemarksOpen(false);
   };
 
   const container = {
@@ -31,6 +64,16 @@ const ServiceHistory = ({ appointments }: ServiceHistoryProps) => {
   const item = {
     hidden: { opacity: 0, y: 20 },
     show: { opacity: 1, y: 0 }
+  };
+
+  const renderRatingStars = (currentRating: number, maxRating: number = 5) => {
+    return Array.from({ length: maxRating }).map((_, i) => (
+      <Star
+        key={i}
+        className={`h-6 w-6 cursor-pointer ${i < form.watch('rating') ? 'text-red-500 fill-red-500' : 'text-gray-300'}`}
+        onClick={() => form.setValue('rating', i + 1)}
+      />
+    ));
   };
 
   return (
@@ -84,13 +127,22 @@ const ServiceHistory = ({ appointments }: ServiceHistoryProps) => {
                     </span>
                   </td>
                   <td className="py-4 px-6">
-                    <Button 
-                      size="sm" 
-                      variant="outline"
-                      onClick={() => handleViewDetails(appointment)}
-                    >
-                      View
-                    </Button>
+                    <div className="flex space-x-2">
+                      <Button 
+                        size="sm" 
+                        variant="outline"
+                        onClick={() => handleViewDetails(appointment)}
+                      >
+                        View
+                      </Button>
+                      <Button 
+                        size="sm" 
+                        variant="outline"
+                        onClick={() => handleViewRemarks(appointment)}
+                      >
+                        Remarks
+                      </Button>
+                    </div>
                   </td>
                 </motion.tr>
               ))}
@@ -99,6 +151,7 @@ const ServiceHistory = ({ appointments }: ServiceHistoryProps) => {
         </div>
       </div>
 
+      {/* Basic Appointment Details Dialog */}
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
@@ -135,6 +188,91 @@ const ServiceHistory = ({ appointments }: ServiceHistoryProps) => {
               )}
             </div>
           )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Service Remarks Dialog */}
+      <Dialog open={remarksOpen} onOpenChange={setRemarksOpen}>
+        <DialogContent className="sm:max-w-[550px]">
+          <DialogHeader>
+            <DialogTitle className="text-center text-xl text-blue-600">Service Remarks</DialogTitle>
+            <DialogDescription className="text-center">
+              Request ID: {selectedAppointment?.id}
+            </DialogDescription>
+          </DialogHeader>
+
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmitRemarks)} className="space-y-6">
+              <div className="grid grid-cols-3 gap-4">
+                <Card className="border border-pink-200 bg-pink-50">
+                  <CardContent className="p-4 flex items-center justify-center">
+                    <p className="text-center text-gray-800">{selectedAppointment?.service}</p>
+                  </CardContent>
+                </Card>
+                <Card className="border border-pink-200 bg-pink-50">
+                  <CardContent className="p-4 flex items-center justify-center">
+                    <p className="text-center text-gray-800">{selectedAppointment?.service} Service</p>
+                  </CardContent>
+                </Card>
+                <Card className="border border-pink-200 bg-pink-50">
+                  <CardContent className="p-4 flex items-center justify-center">
+                    <p className="text-center text-gray-800">{selectedAppointment?.bookingDate}</p>
+                  </CardContent>
+                </Card>
+              </div>
+
+              <div className="grid grid-cols-3 gap-4">
+                <Card className="border border-pink-200 bg-pink-50">
+                  <CardContent className="p-4 flex items-center justify-center">
+                    <p className="text-center text-gray-800">Professional ID</p>
+                  </CardContent>
+                </Card>
+                <Card className="border border-pink-200 bg-pink-50">
+                  <CardContent className="p-4 flex items-center justify-center">
+                    <p className="text-center text-gray-800">{selectedAppointment?.professional}</p>
+                  </CardContent>
+                </Card>
+                <Card className="border border-pink-200 bg-pink-50">
+                  <CardContent className="p-4 flex items-center justify-center">
+                    <p className="text-center text-gray-800">{selectedAppointment?.phone}</p>
+                  </CardContent>
+                </Card>
+              </div>
+
+              <div className="flex flex-col items-center space-y-2">
+                <label className="font-medium text-gray-700">Service rating:</label>
+                <div className="flex space-x-1">
+                  {renderRatingStars(form.watch('rating'))}
+                </div>
+              </div>
+
+              <FormField
+                control={form.control}
+                name="remarks"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="font-medium text-gray-700">Remarks (if any):</FormLabel>
+                    <FormControl>
+                      <Textarea 
+                        placeholder="Enter your remarks about the service..." 
+                        className="border-2 border-gray-300 resize-none"
+                        {...field}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+
+              <div className="flex justify-center space-x-6">
+                <Button type="submit" className="px-10 bg-blue-500 hover:bg-blue-600">
+                  Submit
+                </Button>
+                <Button type="button" onClick={() => setRemarksOpen(false)} className="px-10 bg-blue-500 hover:bg-blue-600">
+                  Close
+                </Button>
+              </div>
+            </form>
+          </Form>
         </DialogContent>
       </Dialog>
     </motion.div>
