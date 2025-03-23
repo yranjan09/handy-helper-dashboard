@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Service, ServiceItem } from '@/types/service';
+import BookingModal from './BookingModal';
 
 interface ServiceDetailsProps {
   service: Service | null;
@@ -11,12 +12,15 @@ interface ServiceDetailsProps {
 
 const ServiceDetails = ({ service }: ServiceDetailsProps) => {
   const [selectedItem, setSelectedItem] = useState<ServiceItem | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   
   const handleBooking = (item: ServiceItem) => {
     setSelectedItem(item);
-    toast.success(`${item.name} service booked successfully!`, {
-      description: `Your ${service?.name} service has been scheduled.`,
-    });
+    setIsModalOpen(true);
+  };
+  
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
   };
   
   if (!service) return null;
@@ -64,6 +68,14 @@ const ServiceDetails = ({ service }: ServiceDetailsProps) => {
             </motion.div>
           ))}
         </div>
+        
+        {selectedItem && (
+          <BookingModal 
+            isOpen={isModalOpen}
+            onClose={handleCloseModal}
+            item={selectedItem}
+          />
+        )}
       </motion.div>
     </AnimatePresence>
   );
